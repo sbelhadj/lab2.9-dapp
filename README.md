@@ -37,7 +37,7 @@ Avant de commencer ce lab, assurez-vous d'avoir configuré votre environnement c
 
 ### **Étapes du Lab**
 
-#### **1\. Préparer l'environnement**  
+#### **1. Préparer l'environnement**  
  
 
 **Installer les dépendances** en utilisant npm :  
@@ -54,7 +54,7 @@ npm install
 
 * * *
 
-#### **2\. Créer le Backend avec Hardhat**
+#### **2. Créer le Backend avec Hardhat**
 
 Si vous n'avez pas encore créé le contrat, voici un rappel de l'implémentation d'un **Instant Payment Hub** sécurisé dans contracts/InstantPaymentHub.sol :
 
@@ -84,7 +84,7 @@ contract InstantPaymentHub is Ownable, Pausable, ReentrancyGuard {
 
         require(!paused(), "Contract is paused");
 
-        \_;
+        _;
 
     }
 
@@ -98,7 +98,7 @@ contract InstantPaymentHub is Ownable, Pausable, ReentrancyGuard {
 
     function deposit() public payable whenNotPaused {
 
-        balances\[msg.sender\] = balances\[msg.sender\].add(msg.value);
+        balances[msg.sender] = balances[msg.sender].add(msg.value);
 
     }
 
@@ -106,11 +106,11 @@ contract InstantPaymentHub is Ownable, Pausable, ReentrancyGuard {
 
     function instantPayment(address recipient, uint256 amount) public whenNotPaused nonReentrant {
 
-        require(balances\[msg.sender\] >= amount, "Insufficient balance");
+        require(balances[msg.sender] >= amount, "Insufficient balance");
 
-        balances\[msg.sender\] = balances\[msg.sender\].sub(amount);
+        balances[msg.sender] = balances[msg.sender].sub(amount);
 
-        balances\[recipient\] = balances\[recipient\].add(amount);
+        balances[recipient] = balances[recipient].add(amount);
 
         emit PaymentMade(msg.sender, recipient, amount);
 
@@ -120,11 +120,11 @@ contract InstantPaymentHub is Ownable, Pausable, ReentrancyGuard {
 
     function withdraw(uint256 amount) public whenNotPaused nonReentrant {
 
-        require(balances\[msg.sender\] >= amount, "Insufficient balance");
+        require(balances[msg.sender] >= amount, "Insufficient balance");
 
         payable(msg.sender).transfer(amount);
 
-        balances\[msg.sender\] = balances\[msg.sender\].sub(amount);
+        balances[msg.sender] = balances[msg.sender].sub(amount);
 
     }
 
@@ -132,7 +132,7 @@ contract InstantPaymentHub is Ownable, Pausable, ReentrancyGuard {
 
     function pause() public onlyOwner {
 
-        \_pause();
+        _pause();
 
     }
 
@@ -140,7 +140,7 @@ contract InstantPaymentHub is Ownable, Pausable, ReentrancyGuard {
 
     function unpause() public onlyOwner {
 
-        \_unpause();
+        _unpause();
 
     }
 
@@ -152,7 +152,7 @@ Déployez ce contrat en utilisant **Hardhat**, comme vous l'avez vu dans le **La
 
 * * *
 
-#### **3\. Créer le Frontend avec React.js**
+#### **3. Créer le Frontend avec React.js**
 
 1.  **Initialiser un projet React.js** :  
      
@@ -184,17 +184,17 @@ import "./App.css";
 
 function App() {
 
-  const \[account, setAccount\] = useState(null);
+  const [account, setAccount] = useState(null);
 
-  const \[contract, setContract\] = useState(null);
+  const [contract, setContract] = useState(null);
 
-  const \[balance, setBalance\] = useState(0);
+  const [balance, setBalance] = useState(0);
 
-  const \[depositAmount, setDepositAmount\] = useState("");
+  const [depositAmount, setDepositAmount] = useState("");
 
-  const \[paymentAmount, setPaymentAmount\] = useState("");
+  const [paymentAmount, setPaymentAmount] = useState("");
 
-  const \[recipient, setRecipient\] = useState("");
+  const [recipient, setRecipient] = useState("");
 
   // Connexion avec Metamask
 
@@ -204,15 +204,15 @@ function App() {
 
       const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-      await provider.send("eth\_requestAccounts", \[\]);
+      await provider.send("eth_requestAccounts", []);
 
       const signer = provider.getSigner();
 
       setAccount(await signer.getAddress());
 
-      const contractAddress = "VOTRE\_ADRESSE\_DE\_CONTRAT"; // Remplacez par l'adresse du contrat déployé
+      const contractAddress = "VOTRE_ADRESSE_DE_CONTRAT"; // Remplacez par l'adresse du contrat déployé
 
-      const contractABI = \[
+      const contractABI = [
 
         "function deposit() public payable",
 
@@ -222,7 +222,7 @@ function App() {
 
         "function balances(address) public view returns (uint256)"
 
-      \];
+      ];
 
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
@@ -312,7 +312,7 @@ function App() {
 
     }
 
-  }, \[\]);
+  }, []);
 
   return (
 
@@ -411,7 +411,7 @@ export default App;
 
 * * *
 
-#### **4\. Tester l'application React.js**
+#### **4. Tester l'application React.js**
 
 **Lancer le projet React** :  
   
@@ -429,7 +429,7 @@ npm start
 
 * * *
 
-#### **5\. Vérification des transactions sur Etherscan**
+#### **5. Vérification des transactions sur Etherscan**
 
 *   Une fois que vous avez effectué des transactions, vous pouvez vérifier leur état sur **Sepolia Etherscan**. Recherchez l'adresse du contrat déployé et consultez les transactions de paiement.
 
@@ -501,4 +501,5 @@ lab-integration-instant-payment-hub/
 *   Intégrer un contrat Ethereum avec un **frontend React.js**.
 *   Créer une interface utilisateur permettant des actions comme le **dépôt**, **paiement** et **retrait**.
 *   Tester et déployer l'application front-end sur le testnet **Sepolia**.
+
 
